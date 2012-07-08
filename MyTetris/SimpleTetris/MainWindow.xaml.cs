@@ -34,6 +34,8 @@ namespace SimpleTetris
         /// </summary>
         public Tetris Tetris { get; private set; }
 
+        public Ai AiTetris { get; private set; }
+
         public int MaxX { get; set; }
 
         public int MaxY { get; set; }
@@ -59,6 +61,8 @@ namespace SimpleTetris
 
             Tetris = new Tetris(MaxX, MaxY);
             Tetris.Repaint += OnRepaint;
+
+            AiTetris = new Ai(Tetris);
         }
 
         #endregion // Constructor
@@ -99,7 +103,7 @@ namespace SimpleTetris
                     Rectangle rect = new Rectangle();
                     rect.Width = FIELD_SIZE;
                     rect.Height = FIELD_SIZE;
-                    rect.Fill = Brushes.Red; // Tetris.Board[i]
+                    rect.Fill = Tetris.PieceColor(Tetris.pieces[Tetris.ActivePiece][Tetris.ActiveR][i]);
                     // pridani do canvasu
                     Canvas.SetTop(rect, ((y + Tetris.ActiveY) * FIELD_SIZE) + 1);
                     Canvas.SetLeft(rect, ((x + Tetris.ActiveX) * FIELD_SIZE) + 1);
@@ -118,7 +122,7 @@ namespace SimpleTetris
                     Rectangle rect = new Rectangle();
                     rect.Width = FIELD_SIZE;
                     rect.Height = FIELD_SIZE;
-                    rect.Fill = Brushes.Blue; // Tetris.Board[i]
+                    rect.Fill = Tetris.PieceColor(Tetris.Board[y, x]);
                     // pridani do canvasu
                     Canvas.SetTop(rect, (y * FIELD_SIZE) + 1);
                     Canvas.SetLeft(rect, (x * FIELD_SIZE) + 1);
@@ -157,6 +161,10 @@ namespace SimpleTetris
             else if (e.Key == Key.S)
             {
                 Tetris.Start();
+            }
+            else if (e.Key == Key.Space)
+            {
+                AiTetris.Run();
             }
             else
             {

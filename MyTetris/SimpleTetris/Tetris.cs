@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Timers;
+using System.Windows.Media;
 
 namespace SimpleTetris
 {
+    /// <summary>
+    /// Trida reprezentujici hru tetris.
+    /// </summary>
     public class Tetris
     {
         #region Fields
@@ -46,6 +50,154 @@ namespace SimpleTetris
                     0,0,2,0,
                     0,0,2,0,
                     0,0,2,0
+                }
+            },
+            // typ S
+            new int[][]
+            {
+                // typ S - horizontalne
+                new int[]
+                {
+                    0,0,0,0,
+                    0,0,3,3,
+                    0,3,3,0,
+                    0,0,0,0
+                },
+                // typ S - vertikalne
+                new int[]
+                {
+                    0,0,3,0,
+                    0,0,3,3,
+                    0,0,0,3,
+                    0,0,0,0
+                }
+            },
+            // typ Z
+            new int[][]
+            {
+                // typ Z - horizontalne
+                new int[]
+                {
+                    0,0,0,0,
+                    0,4,4,0,
+                    0,0,4,4,
+                    0,0,0,0
+                },
+                // typ Z - vertikalne
+                new int[]
+                {
+                    0,0,0,4,
+                    0,0,4,4,
+                    0,0,4,0,
+                    0,0,0,0
+                }
+            },
+            // typ L
+            new int[][]
+            {
+                // typ L - horizontalne, packou dolu
+                new int[]
+                {
+                    0,0,0,0,
+                    0,5,5,5,
+                    0,5,0,0,
+                    0,0,0,0
+                },
+                // typ L - vertikalne, packou doprava
+                new int[]
+                {
+                    0,0,5,0,
+                    0,0,5,0,
+                    0,0,5,5,
+                    0,0,0,0
+                },
+                // typ L - horizontalne, packou nahoru
+                new int[]
+                {
+                    0,0,0,5,
+                    0,5,5,5,
+                    0,0,0,0,
+                    0,0,0,0
+                },
+                // typ L - vertikalne, packou doleva
+                new int[]
+                { 
+                    0,5,5,0,
+                    0,0,5,0,
+                    0,0,5,0,
+                    0,0,0,0
+                }
+            },
+            // typ J
+            new int[][]
+            {
+                // typ J - horizontalne, packou dolu
+                new int[]
+                {
+                    0,0,0,0,
+                    0,6,6,6,
+                    0,0,0,6,
+                    0,0,0,0
+                },
+                // typ J - vertikalne, packou doprava
+                new int[]
+                {
+                    0,0,6,6,
+                    0,0,6,0,
+                    0,0,6,0,
+                    0,0,0,0
+                },
+                // typ J - horizontalne, packou nahoru
+                new int[]
+                {
+                    0,6,0,0,
+                    0,6,6,6,
+                    0,0,0,0,
+                    0,0,0,0
+                },
+                // typ J - vertikalne, packou doleva
+                new int[]
+                {
+                    0,0,6,0,
+                    0,0,6,0,
+                    0,6,6,0,
+                    0,0,0,0
+                }
+            },
+            // typ T
+            new int[][]
+            {
+                // typ T - horizontalne, packou dolu
+                new int[]
+                {
+                    0,0,0,0,
+                    0,7,7,7,
+                    0,0,7,0,
+                    0,0,0,0
+                },
+                // typ T - vertikalne, packou doprava
+                new int[]
+                {
+                    0,0,7,0,
+                    0,0,7,7,
+                    0,0,7,0,
+                    0,0,0,0
+                },
+                // typ T - horizontalne, packou nahoru
+                new int[]
+                {
+                    0,0,7,0,
+                    0,7,7,7,
+                    0,0,0,0,
+                    0,0,0,0
+                },
+                // typ T - vertikalne, packou doleva
+                new int[]
+                {
+                    0,0,7,0,
+                    0,7,7,0,
+                    0,0,7,0,
+                    0,0,0,0
                 }
             }
         };
@@ -104,12 +256,23 @@ namespace SimpleTetris
         public int Height { get; private set; }
 
         /// <summary>
-        /// Aktivni policko.
+        /// Aktivni prvek.
         /// </summary>
         public int ActivePiece { get; private set; }
 
+        /// <summary>
+        /// Pozice X aktivniho prvku.
+        /// </summary>
         public int ActiveX { get { return _activeX; } }
+
+        /// <summary>
+        /// Pozice Y aktivniho prvku.
+        /// </summary>
         public int ActiveY { get { return _activeY; } }
+
+        /// <summary>
+        /// Rotace aktivniho prvku.
+        /// </summary>
         public int ActiveR { get { return _activeR; } }
 
         #endregion // Properties
@@ -197,7 +360,7 @@ namespace SimpleTetris
         {
             int rot = _activeR;
             // 
-                rot = (_activeR+1) % (pieces[ActivePiece].Length);
+            rot = (_activeR + 1) % (pieces[ActivePiece].Length);
             // kontrola. jestli lze rotovat
             if (!IsSpaceFor(_activeX, _activeY, pieces[ActivePiece][rot]))
                 return false;
@@ -293,6 +456,43 @@ namespace SimpleTetris
             return true;
         }
 
+        /// <summary>
+        /// Vraci barvu dle typu policka.
+        /// </summary>
+        /// <param name="colorNumber">cislo barvy</param>
+        /// <returns>barva</returns>
+        public static Brush PieceColor(int colorNumber)
+        {
+            Brush ret = Brushes.White;
+            switch (colorNumber)
+            {
+                case 1:
+                    ret = Brushes.Yellow;
+                    break;
+                case 2:
+                    ret = Brushes.Blue;
+                    break;
+                case 3:
+                    ret = Brushes.Red;
+                    break;
+                case 4:
+                    ret = Brushes.Cyan;
+                    break;
+                case 5:
+                    ret = Brushes.Green;
+                    break;
+                case 6:
+                    ret = Brushes.Magenta;
+                    break;
+                case 7:
+                    ret = Brushes.Black;
+                    break;
+                default:
+                    break;
+            }
+            return ret;
+        }
+
         #endregion // Public methods
 
         #region Event methods
@@ -327,7 +527,7 @@ namespace SimpleTetris
             {
                 if (pieces[ActivePiece][_activeR][i] != 0)
                 {
-                    Board[_activeY + i / 4,_activeX + i % 4] = pieces[ActivePiece][_activeR][i];
+                    Board[_activeY + i / 4, _activeX + i % 4] = pieces[ActivePiece][_activeR][i];
                 }
             }
             ClearLines(_activeY, _activeY + 4);
@@ -360,7 +560,7 @@ namespace SimpleTetris
             int[] cow = GetLine(line);
             for (int i = line - 1; i >= 0; i--)
                 SetLine(i + 1, GetLine(i));
-                // Board[i + 1] = Board[i];
+            // Board[i + 1] = Board[i];
             // Board[0] = cow;
             SetLine(0, cow);
         }
@@ -397,7 +597,7 @@ namespace SimpleTetris
         {
             for (int i = 0; i < Board.GetLength(1); i++)
             {
-                if (Board[line,i] == 0) return false;
+                if (Board[line, i] == 0) return false;
             }
             return true;
         }
