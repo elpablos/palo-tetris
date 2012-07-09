@@ -10,10 +10,14 @@ namespace SimpleTetris
     /// </summary>
     public class Ai
     {
+        #region Fields
+
         bool next;
         int[,] board;
         int px, py, pr, piece;
-
+        
+        #endregion // Fields
+        
         #region Properties
 
         /// <summary>
@@ -64,7 +68,7 @@ namespace SimpleTetris
                         py++;
 
                     int n = Eveluate();
-                    if (n < maxScore)
+                    if (n > maxScore)
                     {
                         maxScore = n;
                         maxpx = px;
