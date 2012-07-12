@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Media;
-using System.ComponentModel.Composition;
 using SimpleTetris.Interfaces;
 
 namespace SimpleTetris.Fields
@@ -64,25 +63,25 @@ namespace SimpleTetris.Fields
             switch (colorNumber)
             {
                 case 1:
-                    ret = Brushes.Yellow;
-                    break;
-                case 2:
-                    ret = Brushes.Blue;
-                    break;
-                case 3:
                     ret = Brushes.Red;
                     break;
-                case 4:
-                    ret = Brushes.Cyan;
-                    break;
-                case 5:
+                case 2:
                     ret = Brushes.Green;
                     break;
+                case 3:
+                    ret = Brushes.Cyan;
+                    break;
+                case 4:
+                    ret = Brushes.Yellow;
+                    break;
+                case 5:
+                    ret = Brushes.Blue;
+                    break;
                 case 6:
-                    ret = Brushes.Magenta;
+                    ret = Brushes.Gray;
                     break;
                 case 7:
-                    ret = Brushes.Black;
+                    ret = Brushes.Aqua;
                     break;
                 default:
                     break;
