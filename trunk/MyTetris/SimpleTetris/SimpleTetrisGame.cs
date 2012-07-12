@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Timers;
 using SimpleTetris.Fields;
-using System.ComponentModel.Composition;
 using SimpleTetris.Interfaces;
 
 namespace SimpleTetris
