@@ -9,15 +9,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Timers;
 using System.Windows.Threading;
+using SimpleTetris.Interfaces;
+using SimpleTetris.Fields;
+using System.Timers;
+using System.Threading;
 
 namespace SimpleTetris
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MySecondWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
@@ -32,13 +34,15 @@ namespace SimpleTetris
         /// <summary>
         /// Reference na tetris.
         /// </summary>
-        public Tetris Tetris { get; private set; }
+        public ITetrisGame Tetris { get; private set; }
 
-        public Ai AiTetris { get; private set; }
+        public ITetrisAI AiTetris { get; private set; }
 
         public int MaxX { get; set; }
 
         public int MaxY { get; set; }
+
+        public bool StartAI { get; private set; }
 
         #endregion // Properties
 
@@ -53,16 +57,17 @@ namespace SimpleTetris
             // registrace key handleru
             KeyDown += MainWindow_KeyUp;
             // Inicializace tetrisu
-            MaxX = 20;
-            MaxY = 50;
+            MaxX = 10;
+            MaxY = 20;
 
             TetrisCanvas.Width = FIELD_SIZE * MaxX + 2;
             TetrisCanvas.Height = FIELD_SIZE * MaxY + 2;
 
-            Tetris = new Tetris(MaxX, MaxY);
+            Tetris = new SimpleTetrisGame(MaxX, MaxY);
             Tetris.Repaint += OnRepaint;
+            Tetris.NextPieceGenerated += OnNextPieceGenerated;
 
-            AiTetris = new Ai(Tetris);
+            AiTetris = new SimpleAI();
         }
 
         #endregion // Constructor
@@ -93,17 +98,18 @@ namespace SimpleTetris
                 bigRect.Stroke = Brushes.Black;
                 TetrisCanvas.Children.Add(bigRect);
 
-                //// vykresleni policek
+                // vykresleni policek
+                if (Tetris.ActivePiece != null)
                 for (int i = 0; i < 16; i++)
                 {
-                    if (Tetris.pieces[Tetris.ActivePiece][Tetris.ActiveR][i] == 0) continue;
+                    if (Tetris.ActivePiece.Pieces[i] == 0) continue;
                     x = i % 4;
                     y = i / 4;
 
                     Rectangle rect = new Rectangle();
                     rect.Width = FIELD_SIZE;
                     rect.Height = FIELD_SIZE;
-                    rect.Fill = Tetris.PieceColor(Tetris.pieces[Tetris.ActivePiece][Tetris.ActiveR][i]);
+                    rect.Fill = BaseField.PieceColor(Tetris.ActivePiece.Pieces[i]);
                     // pridani do canvasu
                     Canvas.SetTop(rect, ((y + Tetris.ActiveY) * FIELD_SIZE) + 1);
                     Canvas.SetLeft(rect, ((x + Tetris.ActiveX) * FIELD_SIZE) + 1);
@@ -122,7 +128,7 @@ namespace SimpleTetris
                     Rectangle rect = new Rectangle();
                     rect.Width = FIELD_SIZE;
                     rect.Height = FIELD_SIZE;
-                    rect.Fill = Tetris.PieceColor(Tetris.Board[y, x]);
+                    rect.Fill = BaseField.PieceColor(Tetris.Board[y, x]);
                     // pridani do canvasu
                     Canvas.SetTop(rect, (y * FIELD_SIZE) + 1);
                     Canvas.SetLeft(rect, (x * FIELD_SIZE) + 1);
@@ -164,11 +170,30 @@ namespace SimpleTetris
             }
             else if (e.Key == Key.Space)
             {
-                AiTetris.Run();
+                AiTetris.Run(Tetris);
+            }
+            else if (e.Key == Key.T)
+            {
+                StartAI = !StartAI;
             }
             else
             {
             }
+        }
+
+        protected void OnNextPieceGenerated(object sender, EventArgs e)
+        {
+            if (StartAI)
+            {
+                Thread t = new Thread(AI);
+                t.Start();
+            }
+        }
+
+        private void AI()
+        {
+            Thread.Sleep(200);
+            AiTetris.Run(Tetris);
         }
 
         #endregion // Events

@@ -2,63 +2,49 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SimpleTetris.Interfaces;
 
 namespace SimpleTetris
 {
-    /// <summary>
-    /// Umela inteligence pro Tetris.
-    /// </summary>
-    public class Ai
+    public class SimpleAI : ITetrisAI
     {
         #region Fields
 
-        bool next;
-        int[,] board;
-        int px, py, pr, piece;
-        
+        protected int px;
+        protected int py;
+        protected int pr;
+
         #endregion // Fields
-        
+
         #region Properties
 
-        /// <summary>
-        /// Reference na hru.
-        /// </summary>
-        public Tetris Tetris { get; private set; }
+        public ITetrisGame Tetris { get; private set; }
 
         #endregion // Properties
 
-        #region Constructor
-
-        /// <summary>
-        /// Konstruktor, predavajici reference na hru tetris.
-        /// </summary>
-        /// <param name="tetris"></param>
-        public Ai(Tetris tetris)
-        {
-            Tetris = tetris;
-            board = Tetris.Board;
-        }
-
-        #endregion // Constructor
-
         #region Public methods
 
-        public void Run()
+        public void Run(ITetrisGame game)
         {
+            if (game == null || game.IsRunning == false)
+                return;
+
+            Tetris = game;
+
             int maxScore = Int32.MinValue;
             int maxpx = 0;
             int maxpr = 0;
 
-            piece = Tetris.ActivePiece;
-
             // pro vsechny x od -4 do maxX +4 
-            for (px = -4; px < board.GetLength(1) + 4 && !next; px++)
+            for (px = -4; px < Tetris.Width + 4; px++)
             {
+                int rot = Tetris.ActivePiece.Rotation;
                 // pro vsechny rotace pro dany prvek
-                for (pr = 0; pr < Tetris.pieces[piece].Length && !next; pr++)
+                for (pr = 0; pr < Tetris.ActivePiece.MaxRotation; pr++)
                 {
+                    Tetris.ActivePiece.Rotation = pr;
                     // pokud nelze prvek umistit, tak preskoc cykly
-                    if (!Tetris.IsSpaceFor(px, 0, Tetris.pieces[piece][pr]))
+                    if (!Tetris.IsSpaceFor(px, 0, Tetris.ActivePiece.Pieces))
                     {
                         continue;
                     }
@@ -66,11 +52,11 @@ namespace SimpleTetris
                     py = 0;
 
                     // inkrementuj Y dokud lze polozit prvek
-                    while (!Tetris.CanParkPiece(px, py, Tetris.pieces[piece][pr]))
+                    while (!Tetris.CanParkPiece(px, py, Tetris.ActivePiece.Pieces))
                         py++;
 
                     // spocitej  ohodnoceni prvku na dane pozici
-                    int n = Eveluate();
+                    int n = Evaluate();
                     // pokud je ohodnoceni vetsi nez MAX skore, tak jej uloz
                     if (n > maxScore)
                     {
@@ -79,10 +65,11 @@ namespace SimpleTetris
                         maxpr = pr;
                     }
                 }
+                Tetris.ActivePiece.Rotation = rot;
             }
 
             // orotuj, dokud se nedostanes na maximalne ohodnocenou rotaci
-            for (int i = 0; i < 4 && Tetris.ActiveR != maxpr; i++)
+            for (int i = 0; i < 4 && Tetris.ActivePiece.Rotation != maxpr; i++)
             {
                 Tetris.Rotate();
             }
@@ -114,7 +101,6 @@ namespace SimpleTetris
             // jinak dropni prvek
             else
             {
-                Console.WriteLine("Drop");
                 Tetris.Drop();
             }
         }
@@ -127,14 +113,12 @@ namespace SimpleTetris
         /// Ohodnoceni boardu pro danou konfiguraci.
         /// </summary>
         /// <returns></returns>
-        private int Eveluate()
+        private int Evaluate()
         {
             int ret = 0;
 
             ret += IronMill();
             ret -= CountCoveredHoles() * 10000;
-
-            Console.WriteLine("Evaluating.. {0}", ret);
             return ret;
         }
 
@@ -146,10 +130,10 @@ namespace SimpleTetris
         {
             int holes = 0;
             // pro vsechny body boardu
-            for (int x = 0; x < board.GetLength(1); x++)
+            for (int x = 0; x < Tetris.Width; x++)
             {
                 bool swap = false;
-                for (int y = 0; y < board.GetLength(0); y++)
+                for (int y = 0; y < Tetris.Height; y++)
                 {
                     // pokud je to nenulovy bod, tak nastav swap na true
                     if (Get(x, y)) swap = true;
@@ -162,8 +146,6 @@ namespace SimpleTetris
                     }
                 }
             }
-            // pocet dir
-            Console.WriteLine("Holes: " + holes);
             return holes;
         }
 
@@ -175,9 +157,9 @@ namespace SimpleTetris
         {
             int iron = 0;
             // pro vsechny body boardu
-            for (int y = 0; y < board.GetLength(0); y++)
+            for (int y = 0; y < Tetris.Height; y++)
             {
-                for (int x = 0; x < board.GetLength(1); x++)
+                for (int x = 0; x < Tetris.Width; x++)
                 {
                     // pokud je bod nenulovy, tak pricti y^3
                     if (Get(x, y)) iron += y * y * y;
@@ -197,13 +179,13 @@ namespace SimpleTetris
         {
             // pokud je bod mimo aktivni prvek, tak vraci true, pokud neni pole prazdne
             if (x < px || x >= px + 4 || y < py || y >= py + 4)
-                return board[y,x] > 0;
+                return Tetris.Board[y, x] > 0;
 
             // pokud je bod aktnivniho prvku nenulovy, tak vraci true
-            if (Tetris.pieces[piece][pr][(y - py) * 4 + (x - px)] != 0) return true;
+            if (Tetris.ActivePiece.Pieces[(y - py) * 4 + (x - px)] != 0) return true;
 
             // jinak pokud je bod nenulovy, tak true
-            return board[y,x] > 0;
+            return Tetris.Board[y, x] > 0;
         }
 
         #endregion // Private methods
