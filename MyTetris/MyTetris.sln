@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleTetris", "SimpleTetris\SimpleTetris.csproj", "{9D8F7094-EB4A-482F-BB66-CE17E1FD29E9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetrisTest", "TetrisTest\TetrisTest.csproj", "{8E5CFF77-5A39-41F7-9B11-57ABEB292CD3}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -30,6 +32,16 @@ Global
 		{9D8F7094-EB4A-482F-BB66-CE17E1FD29E9}.Release|Mixed Platforms.Build.0 = Release|x86
 		{9D8F7094-EB4A-482F-BB66-CE17E1FD29E9}.Release|x86.ActiveCfg = Release|x86
 		{9D8F7094-EB4A-482F-BB66-CE17E1FD29E9}.Release|x86.Build.0 = Release|x86
+		{8E5CFF77-5A39-41F7-9B11-57ABEB292CD3}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{8E5CFF77-5A39-41F7-9B11-57ABEB292CD3}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{8E5CFF77-5A39-41F7-9B11-57ABEB292CD3}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{8E5CFF77-5A39-41F7-9B11-57ABEB292CD3}.Debug|x86.ActiveCfg = Debug|x86
+		{8E5CFF77-5A39-41F7-9B11-57ABEB292CD3}.Debug|x86.Build.0 = Debug|x86
+		{8E5CFF77-5A39-41F7-9B11-57ABEB292CD3}.Release|Any CPU.ActiveCfg = Release|x86
+		{8E5CFF77-5A39-41F7-9B11-57ABEB292CD3}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{8E5CFF77-5A39-41F7-9B11-57ABEB292CD3}.Release|Mixed Platforms.Build.0 = Release|x86
+		{8E5CFF77-5A39-41F7-9B11-57ABEB292CD3}.Release|x86.ActiveCfg = Release|x86
+		{8E5CFF77-5A39-41F7-9B11-57ABEB292CD3}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
