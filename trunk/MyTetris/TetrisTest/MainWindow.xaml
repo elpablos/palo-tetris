@@ -1,0 +1,29 @@
+﻿<Window x:Class="TetrisTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Tetris test" Height="600" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+        
+        <Menu>
+            <MenuItem Header="Fill" Click="MenuItem_Click" />
+            <MenuItem Header="Redraw" Click="MenuItem_Click_1" />
+            <MenuItem Header="FloodFill" Click="MenuItem_Click_2" />
+            <MenuItem Header="Count score" Click="MenuItem_Click_3" />
+        </Menu>
+
+        <Canvas Name="TetrisCanvas" Grid.Row="1">
+            <Rectangle Fill="Green" Width="20" Height="10" Canvas.Left="10" Canvas.Top="20" />
+        </Canvas>
+
+        <StatusBar Name="Status" Grid.Row="2">
+            <StatusBarItem>
+                <TextBlock Name="StatusText" />
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>

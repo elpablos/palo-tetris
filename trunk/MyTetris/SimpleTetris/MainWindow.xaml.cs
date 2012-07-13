@@ -67,7 +67,8 @@ namespace SimpleTetris
             Tetris.Repaint += OnRepaint;
             Tetris.NextPieceGenerated += OnNextPieceGenerated;
 
-            AiTetris = new SimpleAI();
+            //AiTetris = new SimpleAI();
+            AiTetris = new AnotherAI();
         }
 
         #endregion // Constructor
