@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="PaloTetris.GamePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" FocusManager.FocusedElement="{Binding ElementName=TetrisCanvas}" Focusable="True" FocusManager.IsFocusScope="True">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0,7*" />
+            <ColumnDefinition Width="0,3*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <!--<Viewbox Stretch="Uniform">-->
+        <Canvas Name="TetrisCanvas" Grid.RowSpan="4" SizeChanged="TetrisCanvas_SizeChanged" FocusManager.IsFocusScope="True">
+        </Canvas>
+        <!--</Viewbox>-->
+        
+        <Button Name="btnStartGame" Content="Start Game" Grid.Column="1" Click="btnStartGame_Click" Height="64" Width="64"/>
+        <!--<Button Name="btnPauseGame" Content="Pause Game" Grid.Column="1" Grid.Row="1" Click="btnPauseGame_Click" Height="64" Width="64" />-->
+        <Button Name="btnStartAI" Content="Start AI" Grid.Column="1" Grid.Row="2" Click="btnStartAI_Click" Height="64" Width="64" />
+
+    </Grid>
+</UserControl>
