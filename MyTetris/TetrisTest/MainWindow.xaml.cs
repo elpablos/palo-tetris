@@ -209,5 +209,10 @@ namespace TetrisTest
         }
 
         #endregion // Button
+
+        private void Menu_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
     }
 }

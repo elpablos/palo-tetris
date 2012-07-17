@@ -9,7 +9,7 @@
             <RowDefinition Height="20" />
         </Grid.RowDefinitions>
         
-        <Menu>
+        <Menu MenuItem.Click="MenuItem_Click">
             <MenuItem Header="Fill" Click="MenuItem_Click" />
             <MenuItem Header="Redraw" Click="MenuItem_Click_1" />
             <MenuItem Header="FloodFill" Click="MenuItem_Click_2" />
