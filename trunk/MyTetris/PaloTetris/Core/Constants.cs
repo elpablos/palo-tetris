@@ -15,7 +15,6 @@ namespace PaloTetris
         public static readonly string Width = "Width";
         public static readonly string Height = "Height";
 
-        public static readonly string TetrisGameID = "TetrisGameID";
         public static readonly string TetrisAiID = "TetrisAiID";
         public static readonly string AppSettings = "appSettings";
     }

@@ -12,13 +12,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using PaloTetris.Core;
+using System.ComponentModel.Composition;
 
 namespace PaloTetris
 {
     /// <summary>
     /// Interaction logic for SettingsPage.xaml
     /// </summary>
-    public partial class SettingsPage : UserControl
+    public partial class SettingsPage : UserControl, IModule
     {
         #region Fields
 
@@ -34,7 +35,8 @@ namespace PaloTetris
 
         #region Constructors
 
-        public SettingsPage(IShell shell)
+        [ImportingConstructor]
+        public SettingsPage([Import]IShell shell)
         {
             Shell = shell;
 
@@ -45,17 +47,15 @@ namespace PaloTetris
 
         #region AfterLoad
 
-        protected override void OnInitialized(EventArgs e)
+        public void AfterLoaded(bool isFirstTime)
         {
-            base.OnInitialized(e);
+            if (isFirstTime)
+            {
+                cbTetrisAI.ItemsSource = Shell.TetrisAiCollection;
+            }
 
             // nastaveni AI
-            cbTetrisAI.ItemsSource = Shell.TetrisAiCollection;
             cbTetrisAI.SelectedItem = Shell.TetrisAi;
-
-            // nastaveni hry
-            cbTetrisGame.ItemsSource = Shell.TetrisGameCollection;
-            cbTetrisGame.SelectedItem = Shell.TetrisGame;
 
             // prebrani rozmeru
             tbHeight.Text = Shell.MaxY.ToString();
@@ -74,16 +74,14 @@ namespace PaloTetris
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             // ulozeni nastaveni do hlavniho okna
-            Shell.TetrisGame = (ITetrisGame)cbTetrisGame.SelectedItem;
             Shell.TetrisAi = (ITetrisAI)cbTetrisAI.SelectedItem;
             Shell.MaxX = Int16.Parse( tbWidth.Text);
             Shell.MaxY = Int16.Parse(tbHeight.Text);
 
             // zapis do konfigu
-            AppSettingsHelper.SetProperty(Constants.TetrisGameID, ((ITetrisGame)cbTetrisGame.SelectedItem).UniqueID.ToString());
-            AppSettingsHelper.SetProperty(Constants.TetrisAiID, ((ITetrisAI)cbTetrisAI.SelectedItem).UniqueID.ToString());
-            AppSettingsHelper.SetProperty(Constants.Width, tbWidth.Text);
-            AppSettingsHelper.SetProperty(Constants.Height, tbHeight.Text);
+            //AppSettingsHelper.SetProperty(Constants.TetrisAiID, ((ITetrisAI)cbTetrisAI.SelectedItem).UniqueID.ToString());
+            //AppSettingsHelper.SetProperty(Constants.Width, tbWidth.Text);
+            //AppSettingsHelper.SetProperty(Constants.Height, tbHeight.Text);
         }
 
         #endregion // Button

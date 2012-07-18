@@ -5,6 +5,10 @@ using System.Text;
 
 namespace PaloTetris
 {
+    /// <summary>
+    /// Umela inteligence pro Palo-tetris.
+    /// Algoritmus ohodnocuje pozice vyskou a poctem zakrytych policek.
+    /// </summary>
     public class SimpleAI : ITetrisAI
     {
         #region Fields

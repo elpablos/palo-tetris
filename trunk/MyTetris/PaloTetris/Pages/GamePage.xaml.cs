@@ -18,7 +18,7 @@ namespace PaloTetris
     /// <summary>
     /// Interaction logic for GamePage.xaml
     /// </summary>
-    public partial class GamePage : UserControl
+    public partial class GamePage : UserControl, IModule
     {
         #region Fields
 
@@ -39,6 +39,8 @@ namespace PaloTetris
         /// </summary>
         public IShell Shell { get; private set; }
 
+        public ITetrisGame Game { get; private set; }
+
         #endregion
 
         #region Constructor
@@ -58,26 +60,25 @@ namespace PaloTetris
 
         #region AfterLoad
 
-        protected override void OnInitialized(EventArgs e)
+        public void AfterLoaded(bool isFirstTime)
         {
-            base.OnInitialized(e);
+            if (isFirstTime)
+            {
+                btnStartAI.Content = new Image() { Source = new BitmapImage(new Uri("/PaloTetris;component/Resources/user_anonymous_64.png", UriKind.Relative)) };
+                btnStartAI.ToolTip = START_AI_TOOLTIP;
+            }
 
-            // zaregistrujeme se na prekreslovani
-            Shell.TetrisGame.Repaint += OnRepaint;
-            // nastavime rozmery
-            Shell.TetrisGame.Width = Shell.MaxX;
-            Shell.TetrisGame.Height = Shell.MaxY;
-            // nutno zresetovat
-            Shell.TetrisGame.Reset();
+            if (Game != Shell.TetrisGame)
+            {
+                // zaregistrujeme se na prekreslovani
+                Game = Shell.TetrisGame;
+                Game.Repaint += OnRepaint;
 
-            // prekreslime okno
-            //OnRepaint(this, EventArgs.Empty);
-
-            // tlacitka
-            btnStartGame.Content = new Image() { Source = new BitmapImage(new Uri("/PaloTetris;component/Resources/paly_64.png", UriKind.Relative)) };
-            btnStartGame.ToolTip = START_GAME_TOOLTIP;
-            btnStartAI.Content = new Image() { Source = new BitmapImage(new Uri("/PaloTetris;component/Resources/user_anonymous_64.png", UriKind.Relative)) };
-            btnStartAI.ToolTip = START_AI_TOOLTIP;
+                // nastavime rozmery
+                Game.Width = Shell.MaxX;
+                Game.Height = Shell.MaxY;
+            }
+            SwitchButton();
         }
 
         #endregion
@@ -158,18 +159,13 @@ namespace PaloTetris
         {
             if (Shell.TetrisGame.IsRunning)
             {
-                Shell.TetrisGame.Stop();
-                
-                btnStartGame.Content = new Image() { Source = new BitmapImage(new Uri("/PaloTetris;component/Resources/paly_64.png", UriKind.Relative)) };
-                btnStartGame.ToolTip = START_GAME_TOOLTIP;
+                Shell.TetrisGame.Reset();
             }
             else
             {
                 Shell.TetrisGame.Start();
-                btnStartGame.Content = new Image() { Source = new BitmapImage(new Uri("/PaloTetris;component/Resources/stop_64.png", UriKind.Relative)) };
-                btnStartGame.ToolTip = STOP_GAME_TOOLTIP;
             }
-
+            SwitchButton(); ;
         }
 
         private void btnPauseGame_Click(object sender, RoutedEventArgs e)
@@ -179,20 +175,41 @@ namespace PaloTetris
 
         private void btnStartAI_Click(object sender, RoutedEventArgs e)
         {
-            if (Shell.StartAI)
+            Shell.StartAI = !Shell.StartAI;
+            SwitchButton();
+        }
+
+        #endregion // Button events
+
+        #region Helper methods
+
+        private void SwitchButton()
+        {
+            if (Shell.TetrisGame.IsRunning)
             {
-                btnStartAI.Content = new Image() { Source = new BitmapImage(new Uri("/PaloTetris;component/Resources/user_anonymous_64.png", UriKind.Relative)) };
-                btnStartAI.ToolTip = START_AI_TOOLTIP;
+                btnStartGame.Content = new Image() { Source = new BitmapImage(new Uri("/PaloTetris;component/Resources/stop_64.png", UriKind.Relative)) };
+                btnStartGame.ToolTip = STOP_GAME_TOOLTIP;
             }
             else
+            {
+                btnStartGame.Content = new Image() { Source = new BitmapImage(new Uri("/PaloTetris;component/Resources/paly_64.png", UriKind.Relative)) };
+                btnStartGame.ToolTip = START_GAME_TOOLTIP;
+            }
+            if (Shell.StartAI)
             {
                 btnStartAI.Content = new Image() { Source = new BitmapImage(new Uri("/PaloTetris;component/Resources/user1_64.png", UriKind.Relative)) };
                 btnStartAI.ToolTip = STOP_AI_TOOLTIP;
             }
-            Shell.StartAI = !Shell.StartAI;
+            else
+            {
+                btnStartAI.Content = new Image() { Source = new BitmapImage(new Uri("/PaloTetris;component/Resources/user_anonymous_64.png", UriKind.Relative)) };
+                btnStartAI.ToolTip = START_AI_TOOLTIP;
+            }
         }
 
-        #endregion // Button events
+        #endregion
+
+        #region Resize event
 
         private void TetrisCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -201,5 +218,7 @@ namespace PaloTetris
             int temp = Convert.ToInt32(width < height ? width : height);
             _correctDimension = temp > 1 ? temp - 1 : 1;
         }
+
+        #endregion
     }
 }

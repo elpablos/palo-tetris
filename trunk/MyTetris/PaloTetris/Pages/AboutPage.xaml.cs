@@ -18,7 +18,7 @@ namespace PaloTetris
     /// <summary>
     /// Interaction logic for AboutPage.xaml
     /// </summary>
-    public partial class AboutPage : UserControl
+    public partial class AboutPage : UserControl, IModule
     {
         public IShell Shell { get; private set; }
 
@@ -28,14 +28,15 @@ namespace PaloTetris
             InitializeComponent();
         }
 
-        protected override void OnInitialized(EventArgs e)
+        public void AfterLoaded(bool isFirstTime)
         {
-            base.OnInitialized(e);
-
-            AuthorName.Text = AppSettingsHelper.ReadProperty("AuthorName");
-            EmailAddress.Text = AppSettingsHelper.ReadProperty("EmailAddress");
-            ProjectSiteAddress.Text = AppSettingsHelper.ReadProperty("ProjectSiteAddress");
-            VersionNumber.Text = AppSettingsHelper.ReadProperty("VersionNumber");
+            if (isFirstTime)
+            {
+                AuthorName.Text = AppSettingsHelper.ReadProperty("AuthorName");
+                EmailAddress.Text = AppSettingsHelper.ReadProperty("EmailAddress");
+                ProjectSiteAddress.Text = AppSettingsHelper.ReadProperty("ProjectSiteAddress");
+                VersionNumber.Text = AppSettingsHelper.ReadProperty("VersionNumber");
+            }
         }
     }
 }

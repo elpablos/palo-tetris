@@ -54,6 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Ai\BaseAi.cs" />
     <Compile Include="Core\AppSettingsHelper.cs" />
     <Compile Include="Core\Constants.cs" />
     <Compile Include="Fields\BaseField.cs" />
@@ -64,6 +65,8 @@
     <Compile Include="Fields\FieldS.cs" />
     <Compile Include="Fields\FieldT.cs" />
     <Compile Include="Fields\FieldZ.cs" />
+    <Compile Include="Interfaces\IModule.cs" />
+    <Compile Include="Algorithm\ModifiedFloodFill.cs" />
     <Compile Include="Pages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
     </Compile>

@@ -240,13 +240,12 @@ namespace PaloTetris
         public bool Rotate()
         {
             int rot = ActivePiece.Rotation;
-            // 
-            rot = (ActivePiece.Rotation + 1) % ActivePiece.MaxRotation;
+
+            ActivePiece.Rotation = (ActivePiece.Rotation + 1) % ActivePiece.MaxRotation;
             // kontrola. jestli lze rotovat
             if (!IsSpaceFor(ActiveX, ActiveY, ActivePiece.Pieces))
-                return false;
-            // ulozeni rotace
-            ActivePiece.Rotation = rot;
+                ActivePiece.Rotation = rot;
+
             // odpaleni udalosti
             Repaint(this, EventArgs.Empty);
             return true;
@@ -303,6 +302,7 @@ namespace PaloTetris
             for (int xp = 0; xp < 4; xp++)
             {
                 int m = -1;
+                // vypocet urovne nejnizsi kosticky v prvku
                 for (int yp = 4 - 1; yp >= 0; yp--)
                 {
                     if (piece[yp * 4 + xp] != 0)
@@ -311,7 +311,7 @@ namespace PaloTetris
                         break;
                     }
                 }
-                if (m >= 0)
+                if (m >= 0 && (y + m + 1) <= Height)
                 {
                     if (y + m + 1 == Height || Board[y + m + 1, x + xp] != 0)
                     {
