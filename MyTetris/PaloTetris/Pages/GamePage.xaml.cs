@@ -12,6 +12,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Timers;
+using System.Diagnostics;
 
 namespace PaloTetris
 {
@@ -29,6 +31,8 @@ namespace PaloTetris
         private const string STOP_AI_TOOLTIP = "deactivate AI";
 
         private int _correctDimension = 1;
+
+        private Stopwatch _watch;
 
         #endregion // Fields
 
@@ -52,6 +56,7 @@ namespace PaloTetris
         public GamePage(IShell shell)
         {
             Shell = shell;
+            _watch = new Stopwatch();
 
             InitializeComponent();
         }
@@ -73,6 +78,7 @@ namespace PaloTetris
                 // zaregistrujeme se na prekreslovani
                 Game = Shell.TetrisGame;
                 Game.Repaint += OnRepaint;
+                Game.GameEnd += OnGameEnd;
 
                 // nastavime rozmery
                 Game.Width = Shell.MaxX;
@@ -83,7 +89,30 @@ namespace PaloTetris
 
         #endregion
 
-        #region Repaint event
+        #region Game event
+
+        /// <summary>
+        /// Udalost vyvolana na konci.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void OnGameEnd(object sender, EventArgs e)
+        {
+            Dispatcher.Invoke(
+            DispatcherPriority.Normal,
+            (Action)(() =>
+            {
+                _watch.Stop();
+                    MessageBox.Show(
+                        string.Format("Game ends after {0} ms", _watch.ElapsedMilliseconds), 
+                        "End game", 
+                        MessageBoxButton.OK, 
+                        MessageBoxImage.Information
+                        );
+                SwitchButton();
+            }
+            ));
+        }
 
         /// <summary>
         /// Prekresleni.
@@ -164,13 +193,14 @@ namespace PaloTetris
             else
             {
                 Shell.TetrisGame.Start();
+                _watch.Start();
             }
-            SwitchButton(); ;
+            SwitchButton();
         }
 
         private void btnPauseGame_Click(object sender, RoutedEventArgs e)
         {
-           //
+            //
         }
 
         private void btnStartAI_Click(object sender, RoutedEventArgs e)
@@ -202,7 +232,7 @@ namespace PaloTetris
             }
             else
             {
-                btnStartAI.Content = new Image() { Source = new BitmapImage(new Uri("/PaloTetris;component/Resources/user_anonymous_64.png", UriKind.Relative)) };
+                btnStartAI.Content = new Image() { Source = new BitmapImage(new Uri("/PaloTetris;component/Resources/computer-icon.png", UriKind.Relative)) };
                 btnStartAI.ToolTip = START_AI_TOOLTIP;
             }
         }

@@ -54,7 +54,9 @@ namespace PaloTetris
             {
                 _tetrisGame = value;
                 if (_tetrisGame != null)
+                {
                     _tetrisGame.NextPieceGenerated += OnNextPieceGenerated;
+                }
             }
         }
 

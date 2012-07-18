@@ -19,6 +19,7 @@ namespace PaloTetris
         int Height { get; set; }
         bool IsRunning { get; }
 
+        event EventHandler GameEnd;
         event EventHandler Repaint;
         event EventHandler NextPieceGenerated;
 

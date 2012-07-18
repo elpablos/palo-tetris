@@ -51,6 +51,11 @@ namespace PaloTetris
         /// </summary>
         public event EventHandler NextPieceGenerated = delegate { };
 
+        /// <summary>
+        /// Udalost, ktera je odpalena kdykoliv, kdyz se objevi novy prvek.
+        /// </summary>
+        public event EventHandler GameEnd = delegate { };
+
         #endregion // Event
 
         #region Properties
@@ -347,6 +352,16 @@ namespace PaloTetris
         #region Private methods
 
         /// <summary>
+        /// KOnec hry.
+        /// </summary>
+        private void EndGame()
+        {
+            Reset();
+            // odpaline udalost
+            GameEnd(this, EventArgs.Empty);
+        }
+
+        /// <summary>
         /// Zafixovani polozky.
         /// Pokud je radka ucelena, tak ji odmazeme.
         /// </summary>
@@ -443,7 +458,7 @@ namespace PaloTetris
             ActiveX = Width / 2 - 2;
             ActiveY = 0;
             // zkontrolujeme, jestli lze prvek vubec vlozit
-            if (!IsSpaceFor(ActiveX, ActiveY, ActivePiece.Pieces)) Reset();
+            if (!IsSpaceFor(ActiveX, ActiveY, ActivePiece.Pieces)) EndGame();
             // odpalime udalost
             NextPieceGenerated(this, EventArgs.Empty);
 

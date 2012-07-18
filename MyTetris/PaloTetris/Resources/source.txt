@@ -11,4 +11,27 @@ http://www.freeiconsweb.com/Icons-show/Basic_set2_Png/pause_64.png
 http://www.freeiconsweb.com/Icons-show/Basic_set2_Png/paly_64.png
 http://www.freeiconsweb.com/Icons-show/Basic_set2_Png/user_anonymous_64.png
 http://www.freeiconsweb.com/Icons-show/Basic_set2_Png/user1_64.png
-http://www.freeiconsweb.com/Icons-show/Basic_set2_Png/stop_64.png
+
+
+Artist: Afterglow (Available for custom work)
+Iconset: Forum Faces Icons (13 icons)
+License: Linkware (Backlink to http://www.afterglow.ie required)
+Commercial usage: Allowed
+
+Source:
+http://www.iconarchive.com/show/forum-faces-icons-by-afterglow/PC-Weenie-icon.html
+
+Specific links:
+http://icons.iconarchive.com/icons/afterglow/forum-faces/128/PC-Weenie-icon.png
+
+
+Artist: Zeus Box (Available for custom work)
+Iconset: BlankOn Icons (54 icons)
+License: GNU General Public License
+Commercial usage: Allowed
+
+Source:
+http://www.iconarchive.com/show/blankon-icons-by-zeusbox/computer-icon.html
+
+Specific links:
+http://icons.iconarchive.com/icons/zeusbox/blankon/128/computer-icon.png
