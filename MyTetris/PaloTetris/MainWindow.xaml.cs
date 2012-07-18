@@ -39,6 +39,8 @@ namespace PaloTetris
 
         #region Properties
 
+        public IList<IModule> PageCollection { get; private set; }
+
         [ImportMany]
         public IEnumerable<ITetrisGame> TetrisGameCollection { get; private set; }
 
@@ -80,6 +82,7 @@ namespace PaloTetris
         {
             InitializeComponent();
 
+            PageCollection = new List<IModule>();
             // registrace key handleru
             KeyDown += MainWindow_KeyUp;
         }
@@ -109,10 +112,9 @@ namespace PaloTetris
             }
 
             // nastaveni AI a hry
-            Guid g = TryParseGuid(AppSettingsHelper.ReadProperty("TetrisGameID"), out g) ? g : Guid.Empty;
-            TetrisGame = TetrisGameCollection.FirstOrDefault(t => t.UniqueID == g) ?? TetrisGameCollection.FirstOrDefault();
+            TetrisGame = TetrisGameCollection.FirstOrDefault();
 
-            g = TryParseGuid(AppSettingsHelper.ReadProperty("TetrisAiID"), out g) ? g : Guid.Empty;
+            Guid g = TryParseGuid(AppSettingsHelper.ReadProperty("TetrisAiID"), out g) ? g : Guid.Empty;
             TetrisAi = TetrisAiCollection.FirstOrDefault(t => t.UniqueID == g) ?? TetrisAiCollection.FirstOrDefault();
 
             // inicializace velikosti okna pro Tetris
@@ -120,7 +122,8 @@ namespace PaloTetris
             MaxX = AppSettingsHelper.TryReadProperty("Width", out temp) ? temp : DEFAULT_WIDTH;
             MaxY = AppSettingsHelper.TryReadProperty("Height", out temp) ? temp : DEFAULT_HEIGHT;
 
-            ActiveItem.Content = new GamePage(this);
+            // defaultni stranka
+            Navigate(typeof(GamePage));
         }
 
         #endregion
@@ -134,7 +137,9 @@ namespace PaloTetris
         /// <param name="e"></param>
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            ActiveItem.Content = new AboutPage(this);
+            TetrisGame.Reset();
+            //ActiveItem.Content = new AboutPage(this);
+            Navigate(typeof(AboutPage));
         }
 
         /// <summary>
@@ -144,7 +149,9 @@ namespace PaloTetris
         /// <param name="e"></param>
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
-            ActiveItem.Content = new SettingsPage(this);
+            TetrisGame.Reset();
+            // ActiveItem.Content = new SettingsPage(this);
+            Navigate(typeof(SettingsPage));
         }
 
         /// <summary>
@@ -154,7 +161,9 @@ namespace PaloTetris
         /// <param name="e"></param>
         private void MenuItem_Click_2(object sender, RoutedEventArgs e)
         {
-            ActiveItem.Content = new GamePage(this);
+            TetrisGame.Reset();
+            // ActiveItem.Content = new GamePage(this);
+            Navigate(typeof(GamePage));
         }
 
         #endregion // Menu navigation
@@ -203,21 +212,49 @@ namespace PaloTetris
         {
             if (StartAI)
             {
-                Thread t = new Thread(AI);
-                t.Start();
+                new Thread(AI).Start();
             }
         }
 
         private void AI()
         {
-            if (TetrisAi == null) return;
             Thread.Sleep(200);
-            TetrisAi.Run(TetrisGame);
+            if (TetrisAi != null && TetrisGame != null && StartAI && TetrisGame.IsRunning)
+                TetrisAi.Run(TetrisGame);   
         }
 
         #endregion
 
         #region Private methods
+
+        private void Navigate(Type type)
+        {
+            bool isFirst = false;
+            var page = PageCollection.FirstOrDefault(p => p.GetType() == type);
+            if (page == null)
+            {
+                isFirst = true;
+                if (type == typeof(AboutPage))
+                {
+                    page = new AboutPage(this);
+                }
+                else if (type == typeof(SettingsPage))
+                {
+                    page = new SettingsPage(this);
+                }
+                else if (type == typeof(GamePage))
+                {
+                    page = new GamePage(this);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Navigate");
+                }
+                PageCollection.Add(page);
+            }
+            ActiveItem.Content = page;
+            page.AfterLoaded(isFirst);
+        }
 
         /// <summary>
         /// Pomocna metoda, ktera se snazi parsovat unikatni ID ze stringu.
