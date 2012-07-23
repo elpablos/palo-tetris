@@ -222,7 +222,16 @@ namespace PaloTetris
         {
             Thread.Sleep(200);
             if (TetrisAi != null && TetrisGame != null && StartAI && TetrisGame.IsRunning)
-                TetrisAi.Run(TetrisGame);   
+                try
+                {
+                    TetrisAi.Run(TetrisGame);   
+                }
+                catch (NullReferenceException ex)
+                {
+                    /// Todo upravit ukoncovani hry tak, aby toto nenastavalo
+                    Console.WriteLine(ex.Message);
+                }
+
         }
 
         #endregion

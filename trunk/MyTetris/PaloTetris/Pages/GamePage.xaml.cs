@@ -79,11 +79,12 @@ namespace PaloTetris
                 Game = Shell.TetrisGame;
                 Game.Repaint += OnRepaint;
                 Game.GameEnd += OnGameEnd;
-
-                // nastavime rozmery
-                Game.Width = Shell.MaxX;
-                Game.Height = Shell.MaxY;
             }
+            // nastavime rozmery
+            Game.Width = Shell.MaxX;
+            Game.Height = Shell.MaxY;
+            Game.Reset();
+
             SwitchButton();
         }
 
@@ -250,5 +251,20 @@ namespace PaloTetris
         }
 
         #endregion
+
+        #region Focus events
+
+        /// <summary>
+        /// Handles the LostFocus event of the TetrisCanvas control.
+        /// Oprava problemu se ztratou focusu kontrolky pri hrani tetrisu.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        private void TetrisCanvas_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TetrisCanvas.Focus();
+        }
+
+        #endregion // Focus events
     }
 }
